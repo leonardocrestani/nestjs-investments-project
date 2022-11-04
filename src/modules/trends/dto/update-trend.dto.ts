@@ -1,3 +1,6 @@
+import { IsNumber, Min } from 'class-validator';
 export class UpdateTrendDto {
-  currentValue: number;
+  @IsNumber()
+  @Min(0)
+  currentPrice: number;
 }

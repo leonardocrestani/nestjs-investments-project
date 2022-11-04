@@ -17,7 +17,6 @@ export default function calculateConsolidatedAndBalance(
   }
   userPosition.checkingAccountAmount -=
     orderedTrend.currentPrice * orderedTrend.amount;
-  console.log(userPosition);
   userPosition.consolidated =
     userPosition.checkingAccountAmount +
     userPosition.positions.reduce((valor, position) => {

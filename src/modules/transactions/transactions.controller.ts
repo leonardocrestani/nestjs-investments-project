@@ -7,7 +7,7 @@ export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   @Post('/events')
-  create(@Body() data: CreateTransactionDto) {
-    return this.transactionsService.create(data);
+  async create(@Body() data: CreateTransactionDto) {
+    return await this.transactionsService.create(data);
   }
 }

@@ -7,12 +7,12 @@ export class TrendsController {
   constructor(private readonly trendsService: TrendsService) {}
 
   @Get()
-  findAll() {
-    return this.trendsService.findAll();
+  async findAll() {
+    return await this.trendsService.findAll();
   }
 
   @Patch(':symbol')
-  update(@Param('symbol') symbol: string, @Body() data: UpdateTrendDto) {
-    return this.trendsService.update(symbol, data);
+  async update(@Param('symbol') symbol: string, @Body() data: UpdateTrendDto) {
+    return await this.trendsService.update(symbol, data);
   }
 }

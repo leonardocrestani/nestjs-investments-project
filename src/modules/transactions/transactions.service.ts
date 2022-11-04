@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UserRepository } from '../user/user.repository';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 
@@ -10,13 +14,20 @@ export class TransactionsService {
     const user = await this.userRepository.findOne({
       account: data.target.account,
     });
-    if (data.origin.cpf !== user.cpf) {
-      throw new Error('Usuario incorreto');
+    if (!user) {
+      throw new NotFoundException('Usuario nao encontrado');
     }
-    data.amount += user.checkingAccountAmount;
-    await this.userRepository.update(
-      { account: data.target.account },
-      { checkingAccountAmount: data.amount },
-    );
+    if (data.origin.cpf !== user.cpf) {
+      throw new ForbiddenException('Usuario incorreto');
+    }
+    try {
+      data.amount += user.checkingAccountAmount;
+      await this.userRepository.update(
+        { account: data.target.account },
+        { checkingAccountAmount: data.amount },
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 }

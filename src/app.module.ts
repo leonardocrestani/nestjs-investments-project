@@ -8,10 +8,10 @@ import { TransactionsModule } from './modules/transactions/transactions.module';
 
 @Module({
   imports: [
-    TrendsModule,
     MongooseModule.forRoot(
       'mongodb+srv://root:admin@cluster0.caihk.mongodb.net/Investments?retryWrites=true&w=majority',
     ),
+    TrendsModule,
     UserModule,
     PositionModule,
     OrderModule,

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './user.repository';
 import { isValid as isValidCpf } from '@fnando/cpf';
@@ -9,16 +9,24 @@ export class UserService {
 
   async create(data: CreateUserDto) {
     if (!isValidCpf(data.cpf)) {
-      throw new Error('CPF invalido');
+      throw new ForbiddenException('CPF invalido');
     }
     if (data.account.length !== 6) {
-      throw new Error('Numero de conta invalido');
+      throw new ForbiddenException('Numero de conta invalido');
     }
-    const user = await this.userRepository.create(data);
-    return user;
+    try {
+      const user = await this.userRepository.create(data);
+      return user;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findOne(document: string) {
-    return await this.userRepository.findOne({ cpf: document });
+    try {
+      return await this.userRepository.findOne({ cpf: document });
+    } catch (error) {
+      throw error;
+    }
   }
 }

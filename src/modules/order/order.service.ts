@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { TrendsRepository } from '../trends/trends.repository';
 import { UserRepository } from '../user/user.repository';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -14,17 +18,24 @@ export class OrderService {
   async order(document: string, data: CreateOrderDto) {
     const trend = await this.trendRepository.findOne(data.symbol);
     if (!trend) {
-      throw new Error('Ativo invalido');
+      throw new NotFoundException('Ativo invalido');
     }
     const userPosition = await this.userRepository.findPosition(document);
     if (trend.currentPrice * data.amount > userPosition.checkingAccountAmount) {
-      throw new Error('Saldo insuficiente');
+      throw new ForbiddenException('Saldo insuficiente');
     }
-    const orderedTrend = Object.assign({}, trend, { amount: data.amount });
-    const newUserPosition = calculateConsolidatedAndBalance(
-      userPosition,
-      orderedTrend,
-    );
-    return await this.userRepository.update({ cpf: document }, newUserPosition);
+    try {
+      const orderedTrend = Object.assign({}, trend, { amount: data.amount });
+      const newUserPosition = calculateConsolidatedAndBalance(
+        userPosition,
+        orderedTrend,
+      );
+      return await this.userRepository.update(
+        { cpf: document },
+        newUserPosition,
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 }

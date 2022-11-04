@@ -6,7 +6,7 @@ export class PositionController {
   constructor(private readonly positionService: PositionService) {}
 
   @Get(':document')
-  findOne(@Param('document') document: string) {
-    return this.positionService.findOne(document);
+  async findOne(@Param('document') document: string) {
+    return await this.positionService.findOne(document);
   }
 }

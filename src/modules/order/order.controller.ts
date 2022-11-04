@@ -7,7 +7,7 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  order(@Body() data: CreateOrderDto, @Req() req) {
-    return this.orderService.order(req.headers.document, data);
+  async order(@Body() data: CreateOrderDto, @Req() req) {
+    return await this.orderService.order(req.headers.document, data);
   }
 }

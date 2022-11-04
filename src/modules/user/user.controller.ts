@@ -7,12 +7,12 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    return await this.userService.create(createUserDto);
   }
 
   @Get('/userPosition/:document')
-  findPosition(@Param('document') document: string) {
-    return this.userService.findOne(document);
+  async findPosition(@Param('document') document: string) {
+    return await this.userService.findOne(document);
   }
 }

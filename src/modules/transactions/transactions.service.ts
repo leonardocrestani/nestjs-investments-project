@@ -24,7 +24,7 @@ export class TransactionsService {
       data.amount += user.checkingAccountAmount;
       await this.userRepository.update(
         { account: data.target.account },
-        { checkingAccountAmount: data.amount },
+        { checkingAccountAmount: data.amount, consolidated: data.amount },
       );
     } catch (error) {
       throw error;

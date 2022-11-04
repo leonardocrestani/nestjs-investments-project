@@ -15,13 +15,16 @@ export default function calculateConsolidatedAndBalance(
   } else {
     userPosition.positions.push(orderedTrend);
   }
-  userPosition.checkingAccountAmount -=
-    orderedTrend.currentPrice * orderedTrend.amount;
+  userPosition.checkingAccountAmount = (
+    userPosition.checkingAccountAmount -
+    orderedTrend.currentPrice * orderedTrend.amount
+  ).toFixed(2);
   userPosition.consolidated =
     userPosition.checkingAccountAmount +
-    userPosition.positions.reduce((valor, position) => {
-      return (valor += position.currentPrice * position.amount);
-    }, 0);
-
+    userPosition.positions
+      .reduce((valor, position) => {
+        return (valor += position.currentPrice * position.amount);
+      }, 0)
+      .toFixed(2);
   return userPosition;
 }

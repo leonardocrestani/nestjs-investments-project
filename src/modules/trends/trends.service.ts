@@ -21,7 +21,6 @@ export class TrendsService {
 
   async findOne(symbol: string) {
     try {
-      console.log(symbol);
       return await this.trendRepository.findOne(symbol);
     } catch (error) {
       throw error;

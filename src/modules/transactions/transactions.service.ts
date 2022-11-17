@@ -15,10 +15,10 @@ export class TransactionsService {
       account: data.target.account,
     });
     if (!user) {
-      throw new NotFoundException('Usuario nao encontrado');
+      throw new NotFoundException('User not found');
     }
     if (data.origin.cpf !== user.cpf) {
-      throw new ForbiddenException('Usuario incorreto');
+      throw new ForbiddenException('Incorrect CPF');
     }
     try {
       data.amount += user.checkingAccountAmount;

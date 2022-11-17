@@ -18,11 +18,11 @@ export class OrderService {
   async order(document: string, data: CreateOrderDto) {
     const trend = await this.trendRepository.findOne(data.symbol);
     if (!trend) {
-      throw new NotFoundException('Ativo invalido');
+      throw new NotFoundException('Invalid trend');
     }
     const userPosition = await this.userRepository.findPosition(document);
     if (trend.currentPrice * data.amount > userPosition.checkingAccountAmount) {
-      throw new ForbiddenException('Saldo insuficiente');
+      throw new ForbiddenException('Insuficient funds');
     }
     try {
       const orderedTrend = Object.assign({}, trend, { amount: data.amount });

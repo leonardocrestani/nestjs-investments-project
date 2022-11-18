@@ -14,7 +14,6 @@ export class TransactionsService {
     const user = await this.userService.findOne({
       account: data.target.account,
     });
-    console.log(user);
     if (!user) {
       throw new NotFoundException('User not found');
     }

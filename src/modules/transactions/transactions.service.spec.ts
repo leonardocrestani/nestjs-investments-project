@@ -38,12 +38,19 @@ describe('TransactionsService', () => {
         transactionService.create(createTransationMock),
       ).resolves.not.toThrowError();
     });
+    it('should get error', async () => {
+      mockUserService.findOne.mockReturnValue(userMock);
+      mockUserService.update.mockRejectedValue(new Error());
+      await transactionService
+        .create(createTransationMock)
+        .catch((error) => expect(error).toBeInstanceOf(Error));
+    });
     it('should get error when try to make transfer to unexistent user', async () => {
       mockUserService.findOne.mockReturnValue(undefined);
       await transactionService
         .create(createTransationMock)
         .catch((error) =>
-          expect(error).toEqual(new NotFoundException('User not found')),
+          expect(error).toStrictEqual(new NotFoundException('User not found')),
         );
     });
     it('should get error when try to make transfer to incorrect destinatary CPF', async () => {
@@ -52,7 +59,7 @@ describe('TransactionsService', () => {
       await transactionService
         .create(createTransationMock)
         .catch((error) =>
-          expect(error).toEqual(new ForbiddenException('Incorrect CPF')),
+          expect(error).toStrictEqual(new ForbiddenException('Incorrect CPF')),
         );
     });
   });

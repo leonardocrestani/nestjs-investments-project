@@ -55,21 +55,25 @@ describe('TrendsService', () => {
       mockRepository.findOne.mockReturnValue(trendMock);
       mockRepository.update.mockReturnValue(updateTrendMock);
       const trendUpdated = await service.update('PETR4', updateTrendMock);
-      expect(trendUpdated.currentPrice).toBe(updateTrendMock.currentPrice);
+      expect(trendUpdated.currentPrice).toStrictEqual(
+        updateTrendMock.currentPrice,
+      );
     });
     it('should update trend value on user positions', async () => {
       mockRepository.findOne.mockReturnValue(trendMock);
       mockUserService.findAll.mockReturnValue(usersMock);
       mockRepository.update.mockReturnValue(updateTrendMock);
       const trendUpdated = await service.update('PETR4', updateTrendMock);
-      expect(trendUpdated.currentPrice).toBe(updateTrendMock.currentPrice);
+      expect(trendUpdated.currentPrice).toStrictEqual(
+        updateTrendMock.currentPrice,
+      );
     });
     it('should get error when try to updated unexistent trend', async () => {
       mockRepository.findOne.mockReturnValue(undefined);
       await service
         .update('PETR4', updateTrendMock)
         .catch((error) =>
-          expect(error).toEqual(new NotFoundException('Trend not found')),
+          expect(error).toStrictEqual(new NotFoundException('Trend not found')),
         );
     });
   });
@@ -82,7 +86,19 @@ describe('TrendsService', () => {
     it('should find trend by symbol', async () => {
       mockRepository.findOne.mockReturnValue(trendMock);
       const trend = await service.findOne('PETR4');
-      expect(trend).toBe(trendMock);
+      expect(trend).toStrictEqual(trendMock);
+    });
+    it('should get error on find all', async () => {
+      mockRepository.findAll.mockRejectedValue(new Error());
+      await service
+        .findAll()
+        .catch((error) => expect(error).toBeInstanceOf(Error));
+    });
+    it('should get error on find one', async () => {
+      mockRepository.findOne.mockRejectedValue(new Error());
+      await service
+        .findOne(trendMock.symbol)
+        .catch((error) => expect(error).toBeInstanceOf(Error));
     });
   });
 });

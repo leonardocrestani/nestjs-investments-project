@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { userMock } from '../../common/mocks/user.mock';
 import {
@@ -12,7 +12,7 @@ import { createOrderMock } from '../../common/mocks/order.mock';
 import { OrderService } from './order.service';
 
 describe('OrderService', () => {
-  let service: OrderService;
+  let orderService: OrderService;
 
   const mockUserService = {
     findOne: jest.fn().mockReturnValue({}),
@@ -39,11 +39,11 @@ describe('OrderService', () => {
       ],
     }).compile();
 
-    service = module.get<OrderService>(OrderService);
+    orderService = module.get<OrderService>(OrderService);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(orderService).toBeDefined();
   });
 
   describe('Create order', () => {
@@ -51,25 +51,35 @@ describe('OrderService', () => {
       mockTrendService.findOne.mockReturnValue(trendMock);
       mockUserService.findPosition.mockReturnValue(emptyPositionMock);
       mockUserService.update.mockReturnValue(positionMock);
-      const order = await service.order(userMock.cpf, createOrderMock);
-      expect(order).toBe(positionMock);
+      const order = await orderService.order(userMock.cpf, createOrderMock);
+      expect(order).toStrictEqual(positionMock);
+    });
+    it('should get error', async () => {
+      mockTrendService.findOne.mockReturnValue(trendMock);
+      mockUserService.findPosition.mockReturnValue(emptyPositionMock);
+      mockUserService.update.mockRejectedValue(new Error());
+      await orderService
+        .order(userMock.cpf, createOrderMock)
+        .catch((error) => expect(error).toBeInstanceOf(Error));
     });
     it('should get error when try to create order with unexistent trend', async () => {
       mockTrendService.findOne.mockReturnValue(undefined);
-      await service
-        .order('PETR4', createOrderMock)
+      await orderService
+        .order(userMock.cpf, createOrderMock)
         .catch((error) =>
-          expect(error).toEqual(new NotFoundException('Invalid trend')),
+          expect(error).toStrictEqual(new NotFoundException('Invalid trend')),
         );
     });
     it('should get error when try to create order with insuficient funds', async () => {
       mockTrendService.findOne.mockReturnValue(trendMock);
       mockUserService.findOne.mockReturnValue(emptyPositionMock);
       createOrderMock.amount = 100;
-      await service
-        .order('PETR4', createOrderMock)
+      await orderService
+        .order(userMock.cpf, createOrderMock)
         .catch((error) =>
-          expect(error).toEqual(new NotFoundException('Insuficient funds')),
+          expect(error).toStrictEqual(
+            new ForbiddenException('Insuficient funds'),
+          ),
         );
     });
   });

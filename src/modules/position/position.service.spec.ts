@@ -33,13 +33,13 @@ describe('PositionService', () => {
     it('should find user position', async () => {
       mockUserService.findPosition.mockReturnValue(positionMock);
       const position = await positionService.findOne('53926221941');
-      expect(position).toBe(positionMock);
+      expect(position).toStrictEqual(positionMock);
     });
     it('should get error when try to find position with invalid CPF', async () => {
       await positionService
         .findOne('22222222222')
         .catch((error) =>
-          expect(error).toEqual(new ForbiddenException('Invalid CPF')),
+          expect(error).toStrictEqual(new ForbiddenException('Invalid CPF')),
         );
     });
     it('should get error when try to find position with unexistent client', async () => {
@@ -47,7 +47,7 @@ describe('PositionService', () => {
       await positionService
         .findOne('68984948055')
         .catch((error) =>
-          expect(error).toEqual(
+          expect(error).toStrictEqual(
             new ForbiddenException('Unexistent client position'),
           ),
         );

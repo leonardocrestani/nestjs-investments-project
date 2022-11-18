@@ -19,7 +19,7 @@ export class TrendsRepository {
 
   async update(symbol: string, data: UpdateTrendDto): Promise<Trend> {
     const updatedTrend = await this.trendModel.findOneAndUpdate(
-      { symbol },
+      { symbol: symbol },
       data,
       {
         new: true,

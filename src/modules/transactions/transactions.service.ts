@@ -3,17 +3,18 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UserRepository } from '../user/user.repository';
+import { UserService } from '../user/user.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 
 @Injectable()
 export class TransactionsService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly userService: UserService) {}
 
   async create(data: CreateTransactionDto): Promise<void> {
-    const user = await this.userRepository.findOne({
+    const user = await this.userService.findOne({
       account: data.target.account,
     });
+    console.log(user);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -22,7 +23,7 @@ export class TransactionsService {
     }
     try {
       data.amount += user.checkingAccountAmount;
-      await this.userRepository.update(
+      await this.userService.update(
         { account: data.target.account },
         { checkingAccountAmount: data.amount, consolidated: data.amount },
       );

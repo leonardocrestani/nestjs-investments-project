@@ -5,6 +5,7 @@ import { TrendSchema } from './entities/trend.entity';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TrendsRepository } from './trends.repository';
 import { UserModule } from '../user/user.module';
+import { UserService } from '../user/user.service';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { UserModule } from '../user/user.module';
     UserModule,
   ],
   controllers: [TrendsController],
-  providers: [TrendsService, TrendsRepository],
+  providers: [TrendsService, TrendsRepository, UserService],
   exports: [TrendsRepository],
 })
 export class TrendsModule {}

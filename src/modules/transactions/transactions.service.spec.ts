@@ -1,20 +1,15 @@
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserRepository } from '../user/user.repository';
 import { UserService } from '../user/user.service';
-import { createTransationMock } from './transaction.mock';
+import { createTransationMock } from '../../common/mocks/transaction.mock';
 import { TransactionsService } from './transactions.service';
+import { userMock } from '../../common/mocks/user.mock';
 
 describe('TransactionsService', () => {
   let transactionService: TransactionsService;
-  let userService: UserService;
-  let repository: UserRepository;
 
-  const mockRepository = {
-    findAll: jest.fn().mockReturnValue([]),
+  const mockUserService = {
     findOne: jest.fn().mockReturnValue({}),
-    create: jest.fn().mockReturnValue({}),
-    findPosition: jest.fn().mockReturnValue({}),
     update: jest.fn().mockReturnValue(undefined),
   };
 
@@ -22,36 +17,29 @@ describe('TransactionsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TransactionsService,
-        UserService,
         {
-          provide: UserRepository,
-          useValue: mockRepository,
+          provide: UserService,
+          useValue: mockUserService,
         },
       ],
     }).compile();
 
     transactionService = module.get<TransactionsService>(TransactionsService);
-    userService = module.get<UserService>(UserService);
-    repository = module.get<any>(UserRepository);
   });
 
   it('should be defined', () => {
     expect(transactionService).toBeDefined();
-    expect(userService).toBeDefined();
-    expect(repository).toBeDefined();
   });
 
   describe('Create transaction', () => {
     it('should create a transaction', async () => {
-      const user = await userService.create({
-        full_name: 'leonardo crestani',
-        cpf: '36809397019',
-        account: '123443',
-      });
-      await transactionService.create(createTransationMock);
-      expect(user.checkingAccountAmount).toBe(createTransationMock.amount);
+      mockUserService.findOne.mockReturnValue(userMock);
+      expect(
+        transactionService.create(createTransationMock),
+      ).resolves.not.toThrowError();
     });
     it('should get error when try to make transfer to unexistent user', async () => {
+      mockUserService.findOne.mockReturnValue(undefined);
       await transactionService
         .create(createTransationMock)
         .catch((error) =>
@@ -59,10 +47,12 @@ describe('TransactionsService', () => {
         );
     });
     it('should get error when try to make transfer to incorrect destinatary CPF', async () => {
+      mockUserService.findOne.mockReturnValue(userMock);
+      createTransationMock.origin.cpf = '09638485000';
       await transactionService
         .create(createTransationMock)
         .catch((error) =>
-          expect(error).toEqual(new NotFoundException('Incorrect CPF')),
+          expect(error).toEqual(new ForbiddenException('Incorrect CPF')),
         );
     });
   });

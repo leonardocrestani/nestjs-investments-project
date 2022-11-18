@@ -1,5 +1,5 @@
 import { IsEnum, IsNumber, IsObject, Min } from 'class-validator';
-import { TRANSACTIONS } from 'src/common/enums/transactions.enum';
+import { TRANSACTIONS } from '../../../common/enums/transactions.enum';
 
 type target = {
   bank: string;
@@ -15,7 +15,7 @@ type origin = {
 
 export class CreateTransactionDto {
   @IsEnum(TRANSACTIONS)
-  event: string;
+  event: TRANSACTIONS;
   @IsObject()
   target: target;
   @IsObject()
@@ -24,7 +24,12 @@ export class CreateTransactionDto {
   @Min(1)
   amount: number;
 
-  constructor(event: string, target: target, origin: origin, amount: number) {
+  constructor(
+    event: TRANSACTIONS,
+    target: target,
+    origin: origin,
+    amount: number,
+  ) {
     this.event = event;
     this.target = target;
     this.origin = origin;

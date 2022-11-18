@@ -14,3 +14,9 @@ export const positionMock: any = {
   ],
   consolidated: 1077.23,
 };
+
+export const emptyPositionMock: any = {
+  checkingAccountAmount: 1000,
+  positions: [],
+  consolidated: 1000,
+};

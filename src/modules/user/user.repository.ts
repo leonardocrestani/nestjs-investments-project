@@ -21,9 +21,9 @@ export class UserRepository {
     return await this.userModel.findOne(params);
   }
 
-  async findPosition(document: string): Promise<User> {
+  async findPosition(params): Promise<User> {
     return await this.userModel
-      .findOne({ cpf: document })
+      .findOne(params)
       .select(['-cpf', '-_id', '-nome_completo', '-account']);
   }
 

@@ -1,21 +1,14 @@
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserRepository } from '../user/user.repository';
 import { UserService } from '../user/user.service';
-import { positionMock } from './position.mock';
+import { positionMock } from '../../common/mocks/position.mock';
 import { PositionService } from './position.service';
 
 describe('PositionService', () => {
   let positionService: PositionService;
-  let userService: UserService;
-  let repository: UserRepository;
 
-  const mockRepository = {
-    findAll: jest.fn().mockReturnValue([]),
-    findOne: jest.fn().mockReturnValue({}),
-    create: jest.fn().mockReturnValue({}),
+  const mockUserService = {
     findPosition: jest.fn().mockReturnValue({}),
-    update: jest.fn().mockReturnValue(undefined),
   };
 
   beforeEach(async () => {
@@ -23,31 +16,40 @@ describe('PositionService', () => {
       providers: [
         PositionService,
         {
-          provide: UserRepository,
-          useValue: mockRepository,
+          provide: UserService,
+          useValue: mockUserService,
         },
       ],
     }).compile();
 
     positionService = module.get<PositionService>(PositionService);
-    repository = module.get<any>(UserRepository);
   });
 
   it('should be defined', () => {
     expect(positionService).toBeDefined();
-    expect(repository).toBeDefined();
   });
 
   describe('Find position', () => {
     it('should find user position', async () => {
-      const position = await positionService.findOne(positionMock);
+      mockUserService.findPosition.mockReturnValue(positionMock);
+      const position = await positionService.findOne('53926221941');
       expect(position).toBe(positionMock);
     });
     it('should get error when try to find position with invalid CPF', async () => {
       await positionService
-        .findOne('47238648534')
+        .findOne('22222222222')
         .catch((error) =>
-          expect(error).toEqual(new NotFoundException('CPF invalido')),
+          expect(error).toEqual(new ForbiddenException('Invalid CPF')),
+        );
+    });
+    it('should get error when try to find position with unexistent client', async () => {
+      mockUserService.findPosition.mockReturnValue(undefined);
+      await positionService
+        .findOne('68984948055')
+        .catch((error) =>
+          expect(error).toEqual(
+            new ForbiddenException('Unexistent client position'),
+          ),
         );
     });
   });

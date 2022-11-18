@@ -1,17 +1,21 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { UserRepository } from '../user/user.repository';
 import { isValid as isValidCpf } from '@fnando/cpf';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class PositionService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly userService: UserService) {}
 
-  findOne(document: string) {
+  async findOne(document: string) {
     try {
       if (!isValidCpf(document)) {
-        throw new ForbiddenException('CPF invalido');
+        throw new ForbiddenException('Invalid CPF');
       }
-      return this.userRepository.findPosition(document);
+      const position = await this.userService.findPosition({ cpf: document });
+      if (!position) {
+        throw new ForbiddenException('Unexistent client position');
+      }
+      return position;
     } catch (error) {
       throw error;
     }

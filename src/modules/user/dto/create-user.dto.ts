@@ -1,10 +1,14 @@
-import { IsString, MaxLength, MinLength } from 'class-validator';
+import { IsString, MaxLength, MinLength, Validate } from 'class-validator';
+import { CpfValidator } from '../../../common/validators/cpf-validator';
 
 export class CreateUserDto {
   @IsString()
   full_name: string;
+
   @IsString()
+  @Validate(CpfValidator)
   cpf: string;
+
   @IsString()
   @MinLength(6)
   @MaxLength(6)

@@ -1,11 +1,11 @@
 import {
   ConflictException,
   ForbiddenException,
+  NotFoundException,
   Injectable,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './user.repository';
-import { isValid as isValidCpf } from '@fnando/cpf';
 
 @Injectable()
 export class UserService {
@@ -26,9 +26,6 @@ export class UserService {
     if (user) {
       throw new ConflictException('User already exists');
     }
-    if (!isValidCpf(data.cpf)) {
-      throw new ForbiddenException('Invalid CPF');
-    }
     if (data.account.length !== 6) {
       throw new ForbiddenException('Invalid account number');
     }
@@ -42,7 +39,11 @@ export class UserService {
 
   async findOne(params: any) {
     try {
-      return await this.userRepository.findOne(params);
+      const user = await this.userRepository.findOne(params);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      return user;
     } catch (error) {
       throw error;
     }

@@ -81,18 +81,6 @@ describe('UserService', () => {
           ),
         );
     });
-    it('should get error when try to create new user with invalid CPF', async () => {
-      mockRepository.findOne.mockReturnValue(undefined);
-      const mock = {
-        ...createUserMock,
-        cpf: '22222222222',
-      };
-      await service
-        .create(mock)
-        .catch((error) =>
-          expect(error).toStrictEqual(new ForbiddenException('Invalid CPF')),
-        );
-    });
     it('should get error when try to create new user with invalid account number', async () => {
       mockRepository.findOne.mockReturnValue(undefined);
       createUserMock.account = '1234';

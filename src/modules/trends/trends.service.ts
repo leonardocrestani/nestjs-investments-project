@@ -9,11 +9,12 @@ export class TrendsService {
   constructor(
     private readonly trendRepository: TrendsRepository,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   async findAll() {
     try {
-      return await this.trendRepository.findAll();
+      const trends = await this.trendRepository.findAll();
+      return trends
     } catch (error) {
       throw error;
     }

@@ -9,7 +9,7 @@ import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly userRepository: UserRepository) { }
 
   async findAll() {
     try {
@@ -41,9 +41,9 @@ export class UserService {
     try {
       const user = await this.userRepository.findOne(params);
       if (!user) {
-        throw new NotFoundException('User not found');
+        throw new NotFoundException('User not found')
       }
-      return user;
+      return user
     } catch (error) {
       throw error;
     }

@@ -21,8 +21,7 @@ export class OrderService {
       throw new NotFoundException('Invalid trend');
     }
     const userPosition = await this.userService.findPosition({ cpf: document });
-    const user = await this.userService.findOne({ cpf: document })
-    if (trend.currentPrice * data.amount > user.checkingAccountAmount) {
+    if (trend.currentPrice * data.amount > userPosition.checkingAccountAmount) {
       throw new ForbiddenException('Insuficient funds');
     }
     try {

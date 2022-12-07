@@ -16,23 +16,18 @@ type origin = {
 export class CreateTransactionDto {
   @IsEnum(TRANSACTIONS)
   event: TRANSACTIONS;
-  @IsObject()
-  target: target;
-  @IsObject()
-  origin: origin;
+  document: string
   @IsNumber()
   @Min(1)
   amount: number;
 
   constructor(
     event: TRANSACTIONS,
-    target: target,
-    origin: origin,
+    document: string,
     amount: number,
   ) {
     this.event = event;
-    this.target = target;
-    this.origin = origin;
+    this.document = document
     this.amount = amount;
   }
 }

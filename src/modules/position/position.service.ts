@@ -3,8 +3,10 @@ import { isValid as isValidCpf } from '@fnando/cpf';
 import { IPosition, UserService } from '../user/user.service';
 import calculateOffsets from 'src/common/utils/calcultateOffsets';
 
-export interface IPositionResult {
+export interface IResult {
+  checkingAccountAmount: number
   positions: IPosition[],
+  consolidated: number
   limit: number,
   pages: number,
   page: number
@@ -14,7 +16,7 @@ export interface IPositionResult {
 export class PositionService {
   constructor(private readonly userService: UserService) { }
 
-  async findOne(document: string, limit: string, offset: string): Promise<IPositionResult> {
+  async findOne(document: string, limit: string, offset: string): Promise<IResult> {
     const limitNumber = parseInt(limit);
     const offsetNumber = parseInt(offset);
     try {
@@ -25,10 +27,10 @@ export class PositionService {
       if (!position) {
         throw new ForbiddenException('Unexistent client position');
       }
-      const totalPositions = { total: position.length }
+      const totalPositions = { total: position.positions.length }
       const pages = calculateOffsets(limitNumber, offsetNumber, totalPositions.total);
-      const newPositions = position.slice(0, limitNumber)
-      return Object.assign({ positions: newPositions }, totalPositions, { limit: limitNumber, page: offsetNumber + 1, pages });
+      const newPositions = position.positions.slice(0, limitNumber)
+      return Object.assign({ checkingAccountAmount: position.checkingAccountAmount, positions: newPositions, consolidated: position.consolidated }, totalPositions, { limit: limitNumber, page: offsetNumber + 1, pages });
     } catch (error) {
       throw error;
     }

@@ -13,6 +13,12 @@ export interface IPosition {
   amount: number
 }
 
+export interface IPositionResult {
+  checkingAccountAmount: number
+  positions: IPosition[],
+  consolidated: number
+}
+
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) { }
@@ -63,10 +69,9 @@ export class UserService {
     }
   }
 
-  async findPosition(params: any): Promise<IPosition[]> {
+  async findPosition(params: any): Promise<IPositionResult> {
     try {
-      const position = await this.userRepository.findPosition(params)
-      return position.positions;
+      return await this.userRepository.findPosition(params)
     } catch (error) {
       throw error;
     }

@@ -1,14 +1,14 @@
-import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
 import { UpdateTrendDto } from './dto/update-trend.dto';
 import { TrendsService } from './trends.service';
 
 @Controller('trends')
 export class TrendsController {
-  constructor(private readonly trendsService: TrendsService) {}
+  constructor(private readonly trendsService: TrendsService) { }
 
   @Get()
-  async findAll() {
-    return await this.trendsService.findAll();
+  async findAll(@Query('limit') limit: string, @Query('offset') offset: string) {
+    return await this.trendsService.findAll(limit, offset);
   }
 
   @Patch(':symbol')

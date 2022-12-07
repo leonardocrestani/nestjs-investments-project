@@ -6,15 +6,19 @@ import { Trend } from './entities/trend.entity';
 
 @Injectable()
 export class TrendsRepository {
-  constructor(@InjectModel('Trend') private trendModel: Model<Trend>) {}
+  constructor(@InjectModel('Trend') private trendModel: Model<Trend>) { }
 
-  async findAll(): Promise<Trend[]> {
-    const trends = await this.trendModel.find().select([]);
+  async findAll(limit: number, offset: number): Promise<Trend[]> {
+    const trends = await this.trendModel.find().select([]).limit(limit).skip(offset);
     return trends;
   }
 
   async findOne(symbol: string): Promise<Trend> {
     return await this.trendModel.findOne({ symbol }).select('-_id').lean();
+  }
+
+  async countTrends(): Promise<number> {
+    return await this.trendModel.count()
   }
 
   async update(symbol: string, data: UpdateTrendDto): Promise<Trend> {

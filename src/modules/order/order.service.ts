@@ -13,7 +13,7 @@ export class OrderService {
   constructor(
     private readonly trendsService: TrendsService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   async order(document: string, data: CreateOrderDto) {
     const trend = await this.trendsService.findOne(data.symbol);
@@ -21,7 +21,8 @@ export class OrderService {
       throw new NotFoundException('Invalid trend');
     }
     const userPosition = await this.userService.findPosition({ cpf: document });
-    if (trend.currentPrice * data.amount > userPosition.checkingAccountAmount) {
+    const user = await this.userService.findOne({ cpf: document })
+    if (trend.currentPrice * data.amount > user.checkingAccountAmount) {
       throw new ForbiddenException('Insuficient funds');
     }
     try {

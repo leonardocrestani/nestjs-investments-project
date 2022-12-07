@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import calculateOffsets from '../../common/utils/calcultateOffsets';
 import recauculateConsolidated from '../../common/utils/recauculateConsolidated';
 import { UserService } from '../user/user.service';
 import { UpdateTrendDto } from './dto/update-trend.dto';
@@ -11,10 +12,14 @@ export class TrendsService {
     private readonly userService: UserService,
   ) { }
 
-  async findAll() {
+  async findAll(limit: string, offset: string) {
     try {
-      const trends = await this.trendRepository.findAll();
-      return trends
+      const limitNumber = parseInt(limit);
+      const offsetNumber = parseInt(offset);
+      const trends = await this.trendRepository.findAll(limitNumber, offsetNumber);
+      const total = { total: await this.trendRepository.countTrends() }
+      const pages = calculateOffsets(limitNumber, offsetNumber, total.total);
+      return Object.assign({ trends }, total, { limit: limitNumber, page: offsetNumber + 1, pages });
     } catch (error) {
       throw error;
     }

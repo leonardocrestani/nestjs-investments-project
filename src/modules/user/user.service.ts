@@ -7,6 +7,12 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './user.repository';
 
+export interface IPosition {
+  symbol: string,
+  currentPrice: number,
+  amount: number
+}
+
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) { }
@@ -57,9 +63,10 @@ export class UserService {
     }
   }
 
-  async findPosition(params: any) {
+  async findPosition(params: any): Promise<IPosition[]> {
     try {
-      return await this.userRepository.findPosition(params);
+      const position = await this.userRepository.findPosition(params)
+      return position.positions;
     } catch (error) {
       throw error;
     }

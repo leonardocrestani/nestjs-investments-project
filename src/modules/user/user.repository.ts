@@ -6,7 +6,7 @@ import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserRepository {
-  constructor(@InjectModel('User') private userModel: Model<User>) {}
+  constructor(@InjectModel('User') private userModel: Model<User>) { }
 
   async create(data: CreateUserDto): Promise<User> {
     const user = await this.userModel.create(data);
@@ -21,10 +21,10 @@ export class UserRepository {
     return await this.userModel.findOne(params);
   }
 
-  async findPosition(params): Promise<User> {
+  async findPosition(params): Promise<any> {
     return await this.userModel
       .findOne(params)
-      .select(['-cpf', '-_id', '-nome_completo', '-account']);
+      .select(['-cpf', '-_id', '-nome_completo', '-account', '-consolidated', '-checkingAccountAmount']);
   }
 
   async update(params: object, data: any): Promise<void> {

@@ -4,21 +4,25 @@ import { IPosition, UserService } from '../user/user.service';
 import calculateOffsets from 'src/common/utils/calcultateOffsets';
 
 export interface IResult {
-  checkingAccountAmount: number
-  positions: IPosition[],
-  consolidated: number
-  limit: number,
-  pages: number,
-  page: number
+  checkingAccountAmount: number;
+  positions: IPosition[];
+  consolidated: number;
+  limit: number;
+  pages: number;
+  page: number;
 }
 
 @Injectable()
 export class PositionService {
   constructor(private readonly userService: UserService) { }
 
-  async findOne(document: string, limit: string, offset: string): Promise<IResult> {
+  async findOne(
+    document: string,
+    limit: string,
+    offset: string,
+  ): Promise<IResult> {
     const limitNumber = parseInt(limit);
-    const offsetNumber = parseInt(offset);
+    const offsetNumber = parseInt(offset) - 1;
     try {
       if (!isValidCpf(document)) {
         throw new ForbiddenException('Invalid CPF');
@@ -27,10 +31,30 @@ export class PositionService {
       if (!position) {
         throw new ForbiddenException('Unexistent client position');
       }
-      const totalPositions = { total: position.positions.length }
-      const pages = calculateOffsets(limitNumber, offsetNumber, totalPositions.total);
-      const newPositions = position.positions.slice(0, limitNumber)
-      return Object.assign({ checkingAccountAmount: position.checkingAccountAmount, positions: newPositions, consolidated: position.consolidated }, totalPositions, { limit: limitNumber, page: offsetNumber + 1, pages });
+      const totalPositions = { total: position.positions.length };
+      const pages = calculateOffsets(
+        limitNumber,
+        offsetNumber,
+        totalPositions.total,
+      );
+      let newPositions = [];
+      if (offsetNumber === 0) {
+        newPositions = position.positions.slice(0, limitNumber);
+      } else {
+        newPositions = position.positions.slice(
+          limitNumber,
+          limitNumber + limitNumber,
+        );
+      }
+      return Object.assign(
+        {
+          checkingAccountAmount: position.checkingAccountAmount,
+          positions: newPositions,
+          consolidated: position.consolidated,
+        },
+        totalPositions,
+        { limit: limitNumber, page: offsetNumber, pages },
+      );
     } catch (error) {
       throw error;
     }

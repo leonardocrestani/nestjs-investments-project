@@ -15,11 +15,18 @@ export class TrendsService {
   async findAll(limit: string, offset: string) {
     try {
       const limitNumber = parseInt(limit);
-      const offsetNumber = parseInt(offset);
-      const trends = await this.trendRepository.findAll(limitNumber, offsetNumber);
-      const total = { total: await this.trendRepository.countTrends() }
+      const offsetNumber = parseInt(offset) - 1;
+      const trends = await this.trendRepository.findAll(
+        limitNumber,
+        offsetNumber,
+      );
+      const total = { total: await this.trendRepository.countTrends() };
       const pages = calculateOffsets(limitNumber, offsetNumber, total.total);
-      return Object.assign({ trends }, total, { limit: limitNumber, page: offsetNumber + 1, pages });
+      return Object.assign({ trends }, total, {
+        limit: limitNumber,
+        page: offsetNumber,
+        pages,
+      });
     } catch (error) {
       throw error;
     }

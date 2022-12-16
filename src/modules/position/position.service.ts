@@ -22,7 +22,8 @@ export class PositionService {
     offset: string,
   ): Promise<IResult> {
     const limitNumber = parseInt(limit);
-    const offsetNumber = parseInt(offset) - 1;
+    const offsetNumber =
+      parseInt(offset) === 0 ? parseInt(offset) : parseInt(offset) - 1;
     try {
       if (!isValidCpf(document)) {
         throw new ForbiddenException('Invalid CPF');
@@ -53,7 +54,7 @@ export class PositionService {
           consolidated: position.consolidated,
         },
         totalPositions,
-        { limit: limitNumber, page: offsetNumber, pages },
+        { limit: limitNumber, page: offsetNumber + 1, pages },
       );
     } catch (error) {
       throw error;

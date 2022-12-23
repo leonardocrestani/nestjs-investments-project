@@ -43,7 +43,8 @@ export class PositionService {
     offset: string,
   ): Promise<IPositionResult> {
     const limitNumber = parseInt(limit);
-    const offsetNumber = parseInt(offset);
+    const offsetNumber =
+      parseInt(offset) === 0 ? parseInt(offset) : parseInt(offset) - 1;
     try {
       if (!isValidCpf(document)) {
         throw new ForbiddenException('Invalid CPF');

@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './modules/user/user.module';
 import { PositionModule } from './modules/position/position.module';
 import { OrderModule } from './modules/order/order.module';
+import { AuthenticateModule } from './modules/authenticate/authenticate.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { config } from './config/config';
 
@@ -15,6 +16,7 @@ import { config } from './config/config';
     PositionModule,
     OrderModule,
     TransactionsModule,
+    AuthenticateModule,
   ],
   controllers: [],
   providers: [],

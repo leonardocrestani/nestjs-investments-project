@@ -8,7 +8,7 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 
 @Injectable()
 export class TransactionsService {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   async create(data: CreateTransactionDto): Promise<void> {
     const user = await this.userService.findOne({

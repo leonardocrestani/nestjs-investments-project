@@ -8,20 +8,20 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './user.repository';
 
 export interface IPosition {
-  symbol: string,
-  currentPrice: number,
-  amount: number
+  symbol: string;
+  currentPrice: number;
+  amount: number;
 }
 
 export interface IPositionResult {
-  checkingAccountAmount: number
-  positions: IPosition[],
-  consolidated: number
+  checkingAccountAmount: number;
+  positions: IPosition[];
+  consolidated: number;
 }
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) { }
+  constructor(private readonly userRepository: UserRepository) {}
 
   async findAll() {
     try {
@@ -53,9 +53,9 @@ export class UserService {
     try {
       const user = await this.userRepository.findOne(params);
       if (!user) {
-        throw new NotFoundException('User not found')
+        throw new NotFoundException('User not found');
       }
-      return user
+      return user;
     } catch (error) {
       throw error;
     }
@@ -71,7 +71,11 @@ export class UserService {
 
   async findPosition(params: any): Promise<IPositionResult> {
     try {
-      return await this.userRepository.findPosition(params)
+      const position = await this.userRepository.findPosition(params);
+      if (!position) {
+        throw new NotFoundException('Position not found');
+      }
+      return position;
     } catch (error) {
       throw error;
     }

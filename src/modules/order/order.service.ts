@@ -13,7 +13,7 @@ export class OrderService {
   constructor(
     private readonly trendsService: TrendsService,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async order(document: string, data: CreateOrderDto) {
     const trend = await this.trendsService.findOne(data.symbol);

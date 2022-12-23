@@ -1,12 +1,27 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { IResult, PositionService } from './position.service';
+import {
+  IAllPositionsResult,
+  IPositionResult,
+  PositionService,
+} from './position.service';
 
 @Controller('userPosition')
 export class PositionController {
-  constructor(private readonly positionService: PositionService) { }
+  constructor(private readonly positionService: PositionService) {}
 
-  @Get(':document')
-  async findOne(@Param('document') document: string, @Query('limit') limit: string, @Query('offset') offset: string): Promise<IResult> {
-    return await this.positionService.findOne(document, limit, offset);
+  @Get('/all/:document')
+  async findAllPositionsByUser(
+    @Param('document') document: string,
+  ): Promise<IAllPositionsResult> {
+    return await this.positionService.findAllPositionsByUser(document);
+  }
+
+  @Get('/paginated/:document')
+  async findOne(
+    @Param('document') document: string,
+    @Query('limit') limit: string,
+    @Query('offset') offset: string,
+  ): Promise<IPositionResult> {
+    return await this.positionService.findOnePosition(document, limit, offset);
   }
 }

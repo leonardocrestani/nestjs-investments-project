@@ -10,24 +10,20 @@ type target = {
 type origin = {
   bank: string;
   branch: string;
-  cpf: string;
+  document: string;
 };
 
 export class CreateTransactionDto {
   @IsEnum(TRANSACTIONS)
   event: TRANSACTIONS;
-  document: string
+  document: string;
   @IsNumber()
   @Min(1)
   amount: number;
 
-  constructor(
-    event: TRANSACTIONS,
-    document: string,
-    amount: number,
-  ) {
+  constructor(event: TRANSACTIONS, document: string, amount: number) {
     this.event = event;
-    this.document = document
+    this.document = document;
     this.amount = amount;
   }
 }

@@ -27,7 +27,7 @@ export class PositionService {
       if (!isValidCpf(document)) {
         throw new ForbiddenException('Invalid CPF');
       }
-      const position = await this.userService.findPosition({ cpf: document });
+      const position = await this.userService.findPosition({ document });
       if (!position) {
         throw new ForbiddenException('Unexistent client position');
       }
@@ -49,7 +49,7 @@ export class PositionService {
       if (!isValidCpf(document)) {
         throw new ForbiddenException('Invalid CPF');
       }
-      const position = await this.userService.findPosition({ cpf: document });
+      const position = await this.userService.findPosition({ document });
       if (!position) {
         throw new ForbiddenException('Unexistent client position');
       }

@@ -10,7 +10,7 @@ export class TrendsService {
   constructor(
     private readonly trendRepository: TrendsRepository,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async findAll(limit: string, offset: string) {
     try {
@@ -54,7 +54,7 @@ export class TrendsService {
           }
         });
         user.consolidated = recauculateConsolidated(user);
-        await this.userService.update({ cpf: user.cpf }, user);
+        await this.userService.update({ document: user.document }, user);
       });
       const update = await this.trendRepository.update(symbol, data);
       return update;

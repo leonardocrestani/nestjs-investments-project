@@ -7,7 +7,7 @@ export class CreateUserDto {
 
   @IsString()
   @Validate(CpfValidator)
-  cpf: string;
+  document: string;
 
   @IsString()
   @MinLength(6)
@@ -18,7 +18,9 @@ export class CreateUserDto {
   @MaxLength(6)
   account: string;
 
-  constructor(full_name: string, cpf: string, account: string) {
-    (this.full_name = full_name), (this.cpf = cpf), (this.account = account);
+  constructor(full_name: string, document: string, account: string) {
+    (this.full_name = full_name),
+      (this.document = document),
+      (this.account = account);
   }
 }

@@ -6,8 +6,8 @@ import {
 
 @ValidatorConstraint({ name: 'cpfValidator', async: false })
 export class CpfValidator implements ValidatorConstraintInterface {
-  validate(cpf: string) {
-    return isValidCpf(cpf) ? true : false;
+  validate(document: string) {
+    return isValidCpf(document) ? true : false;
   }
 
   defaultMessage() {

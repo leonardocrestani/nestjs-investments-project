@@ -7,7 +7,7 @@ export class User {
   full_name: string;
 
   @Prop({ unique: true, required: true })
-  cpf: string;
+  document: string;
 
   @Prop({ required: true })
   password: string;

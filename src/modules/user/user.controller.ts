@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { JwtAuthGuard } from '../authenticate/jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -12,7 +13,8 @@ export class UserController {
   }
 
   @Get('/:document')
+  @UseGuards(JwtAuthGuard)
   async findOne(@Param('document') document: string) {
-    return await this.userService.findOne({ cpf: document });
+    return await this.userService.findOne({ document });
   }
 }

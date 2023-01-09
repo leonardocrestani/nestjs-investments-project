@@ -4,6 +4,7 @@ import {
   NotFoundException,
   Injectable,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './user.repository';
 
@@ -32,7 +33,9 @@ export class UserService {
   }
 
   async create(data: CreateUserDto) {
-    const user = (await this.userRepository.findOne({ cpf: data.cpf }))
+    const user = (await this.userRepository.findOne({
+      document: data.document,
+    }))
       ? await this.userRepository.findOne({ account: data.account })
       : undefined;
     if (user) {

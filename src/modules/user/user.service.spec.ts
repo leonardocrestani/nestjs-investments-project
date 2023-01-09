@@ -61,7 +61,7 @@ describe('UserService', () => {
     });
     it('should get error when try to create new user with same account', async () => {
       mockRepository.findOne.mockReturnValue(userMock);
-      createUserMock.cpf = '66424912207';
+      createUserMock.document = '66424912207';
       await service
         .create(createUserMock)
         .catch((error) =>
@@ -101,7 +101,7 @@ describe('UserService', () => {
     });
     it('should get user by CPF', async () => {
       mockRepository.findOne.mockReturnValue(userMock);
-      const user = await service.findOne(userMock.cpf);
+      const user = await service.findOne(userMock.document);
       expect(user).toEqual(userMock);
     });
     it('should get error on find all', async () => {
@@ -113,17 +113,17 @@ describe('UserService', () => {
     it('should get error on find one', async () => {
       mockRepository.findOne.mockRejectedValue(new Error());
       await service
-        .findOne({ cpf: userMock.cpf })
+        .findOne({ document: userMock.document })
         .catch((error) => expect(error).toBeInstanceOf(Error));
     });
     it('should get error when try to find user with unexistent CPF', async () => {
       mockRepository.findOne.mockReturnValue(undefined);
       const mock = {
         ...userMock,
-        cpf: '19213656688',
+        document: '19213656688',
       };
       await service
-        .findOne({ cpf: mock.cpf })
+        .findOne({ document: mock.document })
         .catch((error) =>
           expect(error).toStrictEqual(new NotFoundException('User not found')),
         );
@@ -132,26 +132,31 @@ describe('UserService', () => {
   describe('Find position', () => {
     it('should user position by CPF', async () => {
       mockRepository.findPosition.mockReturnValue(emptyPositionMock);
-      const position = await service.findPosition({ cpf: userMock.cpf });
+      const position = await service.findPosition({
+        document: userMock.document,
+      });
       expect(position).toBe(emptyPositionMock);
     });
     it('should get error', async () => {
       mockRepository.findPosition.mockRejectedValue(new Error());
       await service
-        .findPosition({ cpf: userMock.cpf })
+        .findPosition({ document: userMock.document })
         .catch((error) => expect(error).toBeInstanceOf(Error));
     });
   });
   describe('Update user', () => {
     it('should update user', async () => {
       mockRepository.update.mockReturnValue(updateUserMock);
-      const user = await service.update({ cpf: userMock.cpf }, updateUserMock);
+      const user = await service.update(
+        { document: userMock.document },
+        updateUserMock,
+      );
       expect(user).toBe(updateUserMock);
     });
     it('should get error on update', async () => {
       mockRepository.update.mockRejectedValue(new Error());
       await service
-        .update({ cpf: userMock.cpf }, updateUserMock)
+        .update({ document: userMock.document }, updateUserMock)
         .catch((error) => expect(error).toBeInstanceOf(Error));
     });
   });

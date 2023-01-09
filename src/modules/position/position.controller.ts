@@ -1,4 +1,5 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../authenticate/jwt-auth.guard';
 import {
   IAllPositionsResult,
   IPositionResult,
@@ -10,6 +11,7 @@ export class PositionController {
   constructor(private readonly positionService: PositionService) {}
 
   @Get('/all/:document')
+  @UseGuards(JwtAuthGuard)
   async findAllPositionsByUser(
     @Param('document') document: string,
   ): Promise<IAllPositionsResult> {
@@ -17,6 +19,7 @@ export class PositionController {
   }
 
   @Get('/paginated/:document')
+  @UseGuards(JwtAuthGuard)
   async findOne(
     @Param('document') document: string,
     @Query('limit') limit: string,

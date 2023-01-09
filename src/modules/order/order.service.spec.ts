@@ -51,7 +51,10 @@ describe('OrderService', () => {
       mockTrendService.findOne.mockReturnValue(trendMock);
       mockUserService.findPosition.mockReturnValue(emptyPositionMock);
       mockUserService.update.mockReturnValue(positionMock);
-      const order = await orderService.order(userMock.cpf, createOrderMock);
+      const order = await orderService.order(
+        userMock.document,
+        createOrderMock,
+      );
       expect(order).toStrictEqual(positionMock);
     });
     it('should get error', async () => {
@@ -59,13 +62,13 @@ describe('OrderService', () => {
       mockUserService.findPosition.mockReturnValue(emptyPositionMock);
       mockUserService.update.mockRejectedValue(new Error());
       await orderService
-        .order(userMock.cpf, createOrderMock)
+        .order(userMock.document, createOrderMock)
         .catch((error) => expect(error).toBeInstanceOf(Error));
     });
     it('should get error when try to create order with unexistent trend', async () => {
       mockTrendService.findOne.mockReturnValue(undefined);
       await orderService
-        .order(userMock.cpf, createOrderMock)
+        .order(userMock.document, createOrderMock)
         .catch((error) =>
           expect(error).toStrictEqual(new NotFoundException('Invalid trend')),
         );
@@ -75,7 +78,7 @@ describe('OrderService', () => {
       mockUserService.findOne.mockReturnValue(emptyPositionMock);
       createOrderMock.amount = 100;
       await orderService
-        .order(userMock.cpf, createOrderMock)
+        .order(userMock.document, createOrderMock)
         .catch((error) =>
           expect(error).toStrictEqual(
             new ForbiddenException('Insuficient funds'),

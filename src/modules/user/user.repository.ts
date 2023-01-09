@@ -24,7 +24,7 @@ export class UserRepository {
   async findPosition(params): Promise<any> {
     return await this.userModel
       .findOne(params)
-      .select(['-cpf', '-_id', '-full_name', '-password', '-account']);
+      .select(['-document', '-_id', '-full_name', '-password', '-account']);
   }
 
   async update(params: object, data: any): Promise<void> {

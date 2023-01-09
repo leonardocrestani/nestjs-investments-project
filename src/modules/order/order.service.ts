@@ -17,14 +17,13 @@ export class OrderService {
   ) {}
 
   async order(document: string, data: CreateOrderDto) {
-    console.log(data);
     const trend = await this.trendsService.findOne(data.symbol);
     if (!trend) {
       throw new NotFoundException('Invalid trend');
     }
     const formatedDocument = strip(document);
     const userPosition = await this.userService.findPosition({
-      cpf: formatedDocument,
+      document: formatedDocument,
     });
     if (!userPosition) {
       throw new NotFoundException('User position not found');
@@ -39,7 +38,7 @@ export class OrderService {
         orderedTrend,
       );
       return await this.userService.update(
-        { cpf: formatedDocument },
+        { document: formatedDocument },
         newUserPosition,
       );
     } catch (error) {

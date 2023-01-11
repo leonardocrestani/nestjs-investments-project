@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { isValid as isValidCpf } from '@fnando/cpf';
 import { IPosition, UserService } from '../user/user.service';
-import calculateOffsets from 'src/common/utils/calcultateOffsets';
+import calculateOffsets from '../../common/utils/calcultateOffsets';
 
 export interface IPositionResult {
   checkingAccountAmount: number;
@@ -50,16 +50,22 @@ export class PositionService {
         throw new ForbiddenException('Invalid CPF');
       }
       const position = await this.userService.findPosition({ document });
+      console.log(position, 'DENTRO');
       if (!position) {
         throw new ForbiddenException('Unexistent client position');
       }
       const totalPositions = { total: position.positions.length };
+      console.log(totalPositions, 'TOTAL');
       const pages = calculateOffsets(
         limitNumber,
         offsetNumber,
         totalPositions.total,
       );
+      console.log(pages, 'PAGES');
+      console.log(limitNumber, 'LIMIT');
+      console.log(position.positions, 'POSTIONS');
       const newPositions = position.positions.slice(0, limitNumber);
+      console.log(newPositions, 'NEW POSI');
       return Object.assign(
         {
           checkingAccountAmount: position.checkingAccountAmount,

@@ -17,6 +17,7 @@ describe('TrendsService', () => {
   const mockRepository = {
     findAll: jest.fn().mockReturnValue([]),
     findOne: jest.fn().mockReturnValue({}),
+    countTrends: jest.fn().mockReturnValue(0),
     update: jest.fn().mockReturnValue({}),
   };
 
@@ -78,20 +79,21 @@ describe('TrendsService', () => {
     });
   });
   describe('Find trend', () => {
-    it('should find all trends', async () => {
+    it('should find all trends with pagination', async () => {
       mockRepository.findAll.mockReturnValue(trendsMock);
-      const trends = await service.findAll();
-      expect(trends.length).toBeGreaterThan(1);
+      mockRepository.countTrends.mockReturnValue(3);
+      const response = await service.findAll('0', '4');
+      expect(response.trends.length).toBeGreaterThan(1);
     });
     it('should find trend by symbol', async () => {
       mockRepository.findOne.mockReturnValue(trendMock);
       const trend = await service.findOne('PETR4');
       expect(trend).toStrictEqual(trendMock);
     });
-    it('should get error on find all', async () => {
+    it('should get error on find all with pagination', async () => {
       mockRepository.findAll.mockRejectedValue(new Error());
       await service
-        .findAll()
+        .findAll('0', '5')
         .catch((error) => expect(error).toBeInstanceOf(Error));
     });
     it('should get error on find one', async () => {

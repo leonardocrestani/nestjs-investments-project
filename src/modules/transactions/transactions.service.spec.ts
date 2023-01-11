@@ -55,7 +55,7 @@ describe('TransactionsService', () => {
     });
     it('should get error when try to make transfer to incorrect destinatary CPF', async () => {
       mockUserService.findOne.mockReturnValue(userMock);
-      createTransationMock.origin.document = '09638485000';
+      createTransationMock.document = '09638485000';
       await transactionService
         .create(createTransationMock)
         .catch((error) =>
